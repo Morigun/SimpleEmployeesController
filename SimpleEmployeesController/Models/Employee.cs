@@ -22,6 +22,5 @@ namespace SimpleEmployeesController.Models
             get => _lastName;
             set => Set(ref _lastName, value);
         }
-        public ObservableCollection<EmployeeAdditionalFields> AdditionalFields { get; set; } = new();
     }
 }

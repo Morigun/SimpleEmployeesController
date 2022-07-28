@@ -13,64 +13,56 @@ namespace SimpleEmployeesController.Models
     public class EmployeesDbContext : DbContext
     {
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<EmployeeAdditionalFields> AdditionalFields { get; set; }
-        public DbSet<AdditionalFieldDescription> FieldDescriptions { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public string DbPath { get; }
+        public EmployeesDbContext(DbContextOptions<EmployeesDbContext> options) : base(options)
+        {
+            var folder = Environment.SpecialFolder.LocalApplicationData;
+            var path = Environment.GetFolderPath(folder);
+            DbPath = Path.Join(path, "employees.db");
+            Database.EnsureCreated();
+        }
         public EmployeesDbContext()
         {
             var folder = Environment.SpecialFolder.LocalApplicationData;
             var path = Environment.GetFolderPath(folder);
-            DbPath = System.IO.Path.Join(path, "employees.db");
+            DbPath = Path.Join(path, "employees.db");
         }
         protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source={DbPath}");
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AdditionalFieldDescription>().HasData(GetAdditionalFieldDescription());
+            modelBuilder.Entity<User>().HasData(GetUsers());
             modelBuilder.Entity<Employee>().HasData(GetEmployees());
             base.OnModelCreating(modelBuilder);
         }
-
-        AdditionalFieldDescription middleNameDescription = new AdditionalFieldDescription
+        private List<User> GetUsers()
         {
-            AdditionalFieldDescriptionId = 1,
-            DisplayName = "MiddleName"
-        };
-        private List<AdditionalFieldDescription> GetAdditionalFieldDescription()
-        {
-            return new List<AdditionalFieldDescription>
+            return new List<User>
             {
-                middleNameDescription
+                new User { UserId = 1, Login = "user", Password = "user" },
+                new User { UserId = 2, Login = "admin", Password = "admin", IsAdmin = true }
             };
         }
         private List<Employee> GetEmployees()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "EmployeesContext.TestFio.csv";
+            var resourceName = "SimpleEmployeesController.Resources.TestFio.csv";
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
-                using (var reader = new StreamReader(stream, Encoding.UTF8))
+                using (var reader = new StreamReader(stream))
                 {
                     var lines = reader.ReadToEnd().Split(new[] { Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
-                    return lines.Select((line,i) => {
+                    var result = lines.Skip(1).Select((line, i) => {
                         var items = line.Split(';');
                         return new Employee
                         {
-                            EmployeeId = i,
+                            EmployeeId = i+1,
                             FirstName = items[0],
-                            LastName = items[1],
-                            AdditionalFields = new System.Collections.ObjectModel.ObservableCollection<EmployeeAdditionalFields>
-                            {
-                                new EmployeeAdditionalFields 
-                                { 
-                                    EmployeeAdditionalFieldsId = 1, 
-                                    EmployeeID = i, 
-                                    AdditionalFieldDescription = middleNameDescription, 
-                                    Value = items[2] 
-                                }
-                            }
+                            LastName = items[1]
                         };
                     }).ToList();
+                    return result;
                 }
             }
         }

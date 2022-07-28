@@ -37,7 +37,7 @@ namespace SimpleEmployeesController
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             var mainWindow = serviceProvider.GetService<MainWindow>();
-            mainWindow.Show();
+            mainWindow?.Show();
         }
     }
 }
