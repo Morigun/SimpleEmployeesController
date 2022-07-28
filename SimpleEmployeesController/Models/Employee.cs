@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SimpleEmployeesController.MVVM;
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,17 +12,23 @@ namespace SimpleEmployeesController.Models
     public class Employee : ObservableObject
     {
         public int EmployeeId { get; set; }
-        private string _firstName;
-        public string FirstName
+        private string? _firstName;
+        public string? FirstName
         {
             get => _firstName;
             set => Set(ref _firstName, value);
         }
-        private string _lastName;
-        public string LastName
+        private string? _lastName;
+        public string? LastName
         {
             get => _lastName;
             set => Set(ref _lastName, value);
+        }
+
+        protected override void FreeObjects()
+        {
+            _firstName = null;
+            _lastName = null;
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using SimpleEmployeesController.Models;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+using SimpleEmployeesController.Models;
+using SimpleEmployeesController.ViewModel;
 
 using System;
 using System.Collections.Generic;
@@ -15,7 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SimpleEmployeesController
+namespace SimpleEmployeesController.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,17 +26,15 @@ namespace SimpleEmployeesController
     public partial class MainWindow : Window
     {
         EmployeesDbContext _dbContext;
-        public MainWindow(EmployeesDbContext dbContext)
+        IServiceProvider _serviceProvider;
+        internal MainWindowViewModel viewModel;
+        public MainWindow(IServiceProvider serviceProvider)
         {
-            _dbContext = dbContext;
+            _serviceProvider = serviceProvider;
+            _dbContext = _serviceProvider.GetRequiredService<EmployeesDbContext>();
             InitializeComponent();
-            GetEmployees();
-        }
-
-        private void GetEmployees()
-        {
-            var employees = _dbContext.Employees.ToList();
-            EmployeesDG.ItemsSource = employees;
+            viewModel = _serviceProvider.GetRequiredService<MainWindowViewModel>();
+            DataContext = viewModel;
         }
     }
 }

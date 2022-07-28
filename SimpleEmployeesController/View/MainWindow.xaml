@@ -1,4 +1,4 @@
-﻿<Window x:Class="SimpleEmployeesController.MainWindow"
+﻿<Window x:Class="SimpleEmployeesController.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,11 +7,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <DataGrid Name="EmployeesDG" AutoGenerateColumns="False">
+        <DataGrid Name="EmployeesDG" AutoGenerateColumns="False" ItemsSource="{Binding Employees}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding EmployeeId}"/>
-                <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}"/>
-                <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}"/>
+                <DataGridTextColumn Header="Id" Binding="{Binding EmployeeId}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Имя" Binding="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

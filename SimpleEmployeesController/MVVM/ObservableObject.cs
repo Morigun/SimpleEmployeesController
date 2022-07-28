@@ -1,15 +1,18 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
-namespace SimpleEmployeesController.Models
+namespace SimpleEmployeesController.MVVM
 {
-    public class ObservableObject : INotifyPropertyChanged
+    public abstract class ObservableObject : INotifyPropertyChanged, IDisposable
     {
+        private bool disposed = false;
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void Set<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
@@ -35,6 +38,22 @@ namespace SimpleEmployeesController.Models
                 var e = new PropertyChangedEventArgs(propertyName);
                 handler(this, e);
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected abstract void FreeObjects();
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed) return;
+            if (disposing)
+            {
+                FreeObjects();
+            }
+            disposed = true;
         }
     }
 }

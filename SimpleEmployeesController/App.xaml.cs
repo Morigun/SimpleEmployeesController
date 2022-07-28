@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using SimpleEmployeesController.Models;
+using SimpleEmployeesController.View;
+using SimpleEmployeesController.ViewModel;
 
 using System;
 using System.Collections.Generic;
@@ -31,12 +33,15 @@ namespace SimpleEmployeesController
             {
                 options.UseSqlite("Data Source = Employee.db");
             });
+            services.AddTransient<LoginViewModel>();
+            services.AddTransient<LoginWindow>();
+            services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<MainWindow>();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var mainWindow = serviceProvider.GetService<MainWindow>();
+            var mainWindow = serviceProvider.GetService<LoginWindow>();
             mainWindow?.Show();
         }
     }

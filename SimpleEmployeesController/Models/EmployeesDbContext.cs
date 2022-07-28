@@ -58,8 +58,8 @@ namespace SimpleEmployeesController.Models
                         return new Employee
                         {
                             EmployeeId = i+1,
-                            FirstName = items[0],
-                            LastName = items[1]
+                            FirstName = items[1],
+                            LastName = items[2]
                         };
                     }).ToList();
                     return result;

@@ -1,11 +1,12 @@
-﻿<Window x:Class="SimpleEmployeesController.Login"
+﻿<Window x:Class="SimpleEmployeesController.View.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleEmployeesController"
+        xmlns:vm="clr-namespace:SimpleEmployeesController.ViewModel"
         mc:Ignorable="d"
-        Title="Login" Height="125" Width="400">
+        Title="Login" Height="150" Width="300">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -17,10 +18,10 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Label Content="Логин:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="4"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="4" Text="{Binding User.Login}"/>
         <Label Grid.Row="1" Grid.Column="0" Content="Пароль:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4"/>
-        <PasswordBox Grid.Row="1" Grid.Column="1" Margin="4"/>
+        <PasswordBox Grid.Row="1" Grid.Column="1" Margin="4" PasswordChanged="PasswordBox_PasswordChanged"/>
         <CheckBox Grid.Row="2" Content="Запомнить" VerticalAlignment="Center" Margin="4"/>
-        <Button Grid.Row="2" Grid.Column="1" Content="Вход" Margin="4"/>
+        <Button Grid.Row="2" Grid.Column="1" Content="Вход" Margin="4" Command="{Binding Login}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
     </Grid>
 </Window>
