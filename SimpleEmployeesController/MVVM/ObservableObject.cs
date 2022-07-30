@@ -1,4 +1,6 @@
 ﻿
+using SimpleEmployeesController.Models;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,9 +14,13 @@ namespace SimpleEmployeesController.MVVM
 {
     public abstract class ObservableObject : INotifyPropertyChanged, IDisposable
     {
-        private bool disposed = false;
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        /// <summary>
+        /// Метод для оповещения подписчиков о изменении поля объекта
+        /// </summary>
+        /// <typeparam name="T">Тип изменяемого объекта</typeparam>
+        /// <param name="field">Поле куда занести новое значение</param>
+        /// <param name="value">Значение</param>
+        /// <param name="propertyName">Имя изменяемого свойства</param>
         protected void Set<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
         {
             if (EqualityComparer<T>.Default.Equals(field, value))
@@ -24,9 +30,13 @@ namespace SimpleEmployeesController.MVVM
             if (propertyName != null)
                 OnPropertyChanged(propertyName);
         }
+        #region Notification
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public virtual void OnNotification() { }
 
-        public virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
+            OnNotification();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
@@ -39,12 +49,17 @@ namespace SimpleEmployeesController.MVVM
                 handler(this, e);
             }
         }
-
+        #endregion
+        #region Dispose
+        private bool disposed = false;
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+        /// <summary>
+        /// Метод для освобождения памяти в дочерних типах
+        /// </summary>
         protected abstract void FreeObjects();
         protected virtual void Dispose(bool disposing)
         {
@@ -55,5 +70,6 @@ namespace SimpleEmployeesController.MVVM
             }
             disposed = true;
         }
+        #endregion
     }
 }

@@ -4,15 +4,59 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleEmployeesController"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Управление персоналом" Height="450" Width="600"
+        Style="{DynamicResource WindowStyle}"
+        SizeChanged="Window_SizeChanged">
     <Grid>
-        <DataGrid Name="EmployeesDG" AutoGenerateColumns="False" ItemsSource="{Binding Employees}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding EmployeeId}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Имя" Binding="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
-            </DataGrid.Columns>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="32"/>
+        </Grid.RowDefinitions>
+        <Menu Style="{DynamicResource MenuStyle}">
+            <MenuItem Header="Файл" Style="{DynamicResource MenuItemStyle}">
+                <MenuItem Header="Выход" Command="{Binding Exit}" Style="{DynamicResource MenuItemStyle}"/>
+            </MenuItem>
+            <MenuItem Header="Настройки" Style="{DynamicResource MenuItemStyle}">
+                <MenuItem Header="Темы" Style="{DynamicResource MenuItemStyle}">
+                    <MenuItem Header="Дефолтная" Tag="default" Click="ThemeSelectMenuItemClick" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Светлая тема" Tag="light" Click="ThemeSelectMenuItemClick" Style="{DynamicResource MenuItemStyle}"/>
+                    <MenuItem Header="Темная тема" Tag="dark" Click="ThemeSelectMenuItemClick" Style="{DynamicResource MenuItemStyle}"/>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Stretch" Width="Auto">
+            <TextBlock Text="Фамилия:" VerticalAlignment="Center" Margin="4" Style="{DynamicResource TextBlockStyle}"/>
+            <TextBox Text="{Binding Search}" MinWidth="128" Margin="4" Style="{DynamicResource TextBoxStyle}"/>
+            <Button Content="Поиск" Width="64" Margin="4" Command="{Binding Filter}" Style="{DynamicResource ButtonStyle}"/>
+        </StackPanel>
+        <DataGrid Grid.Row="2"
+                  Grid.ColumnSpan="2" 
+                  Name="EmployeesDG" 
+                  ItemsSource="{Binding FiltredEmployee}"
+                  CellStyle="{DynamicResource DataGridCellStyle}"
+                  ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}"
+                  RowHeaderStyle="{DynamicResource DataGridRowHeaderStyle}"
+                  RowStyle="{DynamicResource DataGridRowStyle}"
+                  Style="{DynamicResource DataGridStyle}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="AddingNewItem">
+                    <i:InvokeCommandAction Command="{Binding StartAddRow}" PassEventArgsToCommand="True"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </DataGrid>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Name="ControlPanel">
+            <Button Content="Добавить" Padding="4" Margin="4" Command="{Binding Add}" CommandParameter="{Binding ElementName=EmployeesDG, Path=SelectedItem}" Style="{DynamicResource ButtonStyle}"/>
+            <Separator Style="{DynamicResource SeparatorStyle}"/>
+            <Button Content="Удалить" Padding="4" Margin="4" Command="{Binding Delete}" CommandParameter="{Binding ElementName=EmployeesDG, Path=SelectedItem}" Style="{DynamicResource ButtonStyle}"/>
+        </StackPanel>
+        <StatusBar Grid.Row="4" Grid.ColumnSpan="2" Style="{DynamicResource StatusBarStyle}">
+            <StatusBarItem Content="Пользователь:" Style="{DynamicResource StatusBarItemStyle}"/>
+            <StatusBarItem Content="{Binding User.Login}" Style="{DynamicResource StatusBarItemStyle}"/>
+        </StatusBar>
     </Grid>
 </Window>

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using SimpleEmployeesController.Models;
+using SimpleEmployeesController.Properties;
 using SimpleEmployeesController.View;
 using SimpleEmployeesController.ViewModel;
 
@@ -26,6 +27,11 @@ namespace SimpleEmployeesController
             ServiceCollection services = new ServiceCollection();
             ConfigureServices(services);
             serviceProvider = services.BuildServiceProvider();
+            SelectTheme(GetThemeFromSettings());
+        }
+        private string GetThemeFromSettings()
+        {
+            return Settings.Default.Theme;
         }
         private void ConfigureServices(ServiceCollection services)
         {
@@ -35,14 +41,27 @@ namespace SimpleEmployeesController
             });
             services.AddTransient<LoginViewModel>();
             services.AddTransient<LoginWindow>();
-            services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<IMainViewModel, MainWindowViewModel>();
             services.AddSingleton<MainWindow>();
         }
-
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var mainWindow = serviceProvider.GetService<LoginWindow>();
-            mainWindow?.Show();
+            var loginWindow = serviceProvider.GetService<LoginWindow>();
+            loginWindow?.Show();
+        }
+        public static void SelectTheme(string? theme)
+        {
+            if (string.IsNullOrEmpty(theme)) return;
+            Settings.Default.Theme = theme;
+            Settings.Default.Save();
+            string style = $"Themes/{theme}.xaml";
+            var uri = new Uri(style, UriKind.Relative);
+            ResourceDictionary? resourceDict = LoadComponent(uri) as ResourceDictionary;
+            if (resourceDict != null)
+            {
+                Current.Resources.Clear();
+                Current.Resources.MergedDictionaries.Add(resourceDict);
+            }
         }
     }
 }

@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleEmployeesController"
         xmlns:vm="clr-namespace:SimpleEmployeesController.ViewModel"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="Login" Height="150" Width="300">
+        Title="Авторизация" Height="150" Width="300"
+        Style="{DynamicResource WindowStyle}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -17,11 +19,17 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Label Content="Логин:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="4" Text="{Binding User.Login}"/>
-        <Label Grid.Row="1" Grid.Column="0" Content="Пароль:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4"/>
-        <PasswordBox Grid.Row="1" Grid.Column="1" Margin="4" PasswordChanged="PasswordBox_PasswordChanged"/>
-        <CheckBox Grid.Row="2" Content="Запомнить" VerticalAlignment="Center" Margin="4"/>
-        <Button Grid.Row="2" Grid.Column="1" Content="Вход" Margin="4" Command="{Binding Login}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+        <Label Content="Логин:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4" Style="{DynamicResource LabelStyle}"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="4" Text="{Binding User.Login}" Style="{DynamicResource TextBoxStyle}"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Пароль:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4" Style="{DynamicResource LabelStyle}"/>
+        <PasswordBox Grid.Row="1" Grid.Column="1" Margin="4" Name="PasswordB" Style="{DynamicResource PasswordBoxStyle}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PasswordChanged">
+                    <i:InvokeCommandAction Command="{Binding InputPassword}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type PasswordBox}}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </PasswordBox>
+        <CheckBox Grid.Row="2" Content="Запомнить" VerticalAlignment="Center" Margin="4" IsChecked="{Binding IsSave}" Style="{DynamicResource CheckBoxStyle}"/>
+        <Button Grid.Row="2" Grid.Column="1" Content="Вход" Margin="4" Command="{Binding Login}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" Style="{DynamicResource ButtonStyle}"/>
     </Grid>
 </Window>

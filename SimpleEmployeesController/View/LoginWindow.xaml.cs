@@ -24,24 +24,11 @@ namespace SimpleEmployeesController.View
     /// </summary>
     public partial class LoginWindow : Window
     {
-        EmployeesDbContext _dbContext;
-        IServiceProvider _serviceProvider;
-        internal LoginViewModel viewModel;
-        public LoginWindow(IServiceProvider serviceProvider)
+        public LoginWindow(LoginViewModel viewModel)
         {
-            _serviceProvider = serviceProvider;
-            _dbContext = _serviceProvider?.GetService<EmployeesDbContext>();
             InitializeComponent();
-            viewModel = _serviceProvider.GetService<LoginViewModel>();
             DataContext = viewModel;
-        }
-
-        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (DataContext != null)
-            {
-                viewModel.User.Password = ((PasswordBox)sender).Password;
-            }
+            PasswordB.Password = viewModel!.User!.Password;
         }
     }
 }
